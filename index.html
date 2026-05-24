@@ -2,13 +2,20 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>二进制拨珠计数器（满二进一）</title>
+<title>二进制拨珠计数器（居中版）</title>
 <style>
     body {
         font-family: "Microsoft YaHei", sans-serif;
         background: #f4f7fa;
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .wrapper {
         text-align: center;
-        padding: 40px;
     }
 
     h1 {
@@ -23,7 +30,7 @@
 
     .abacus {
         display: flex;
-        justify-content: flex-end; /* ✅ 第一位在最右 */
+        justify-content: center; /* ✅ 整体居中 */
         gap: 35px;
         margin-bottom: 30px;
     }
@@ -51,7 +58,7 @@
         left: 50%;
         transform: translateX(-50%);
         box-shadow: 0 6px 12px rgba(0,0,0,.3);
-        transition: top 0.4s ease, opacity 0.3s;
+        transition: top 0.4s ease;
     }
 
     .controls {
@@ -73,9 +80,16 @@
     .minus { background: #f56c6c; color: white; }
 
     .label {
-        margin-top: 10px;
+        margin-top: 6px;
         font-size: 14px;
         color: #555;
+    }
+
+    .weight {
+        margin-top: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #409eff;
     }
 
     .binary-display {
@@ -102,67 +116,74 @@
 </head>
 <body>
 
-<h1>二进制拨珠计数器</h1>
-<div class="rule">
-    规则：每杆最多 2 颗珠，出现第 2 颗时立即消失并向左侧进 1
-</div>
-
-<div class="abacus">
-    <!-- 第五位 -->
-    <div class="rod" data-index="4">
-        <div class="pole" id="pole4"></div>
-        <div class="controls">
-            <button class="plus" onclick="addOne(4)">+</button>
-            <button class="minus" onclick="subOne(4)">−</button>
-        </div>
-        <div class="label">第五位</div>
+<div class="wrapper">
+    <h1>二进制拨珠计数器</h1>
+    <div class="rule">
+        规则：每杆最多 2 颗珠，满二立即消失并向左侧进 1
     </div>
 
-    <!-- 第四位 -->
-    <div class="rod" data-index="3">
-        <div class="pole" id="pole3"></div>
-        <div class="controls">
-            <button class="plus" onclick="addOne(3)">+</button>
-            <button class="minus" onclick="subOne(3)">−</button>
+    <div class="abacus">
+        <!-- 第五位 -->
+        <div class="rod">
+            <div class="pole" id="pole4"></div>
+            <div class="controls">
+                <button class="plus" onclick="addOne(4)">+</button>
+                <button class="minus" onclick="subOne(4)">−</button>
+            </div>
+            <div class="label">第五位</div>
+            <div class="weight">16</div>
         </div>
-        <div class="label">第四位</div>
+
+        <!-- 第四位 -->
+        <div class="rod">
+            <div class="pole" id="pole3"></div>
+            <div class="controls">
+                <button class="plus" onclick="addOne(3)">+</button>
+                <button class="minus" onclick="subOne(3)">−</button>
+            </div>
+            <div class="label">第四位</div>
+            <div class="weight">8</div>
+        </div>
+
+        <!-- 第三位 -->
+        <div class="rod">
+            <div class="pole" id="pole2"></div>
+            <div class="controls">
+                <button class="plus" onclick="addOne(2)">+</button>
+                <button class="minus" onclick="subOne(2)">−</button>
+            </div>
+            <div class="label">第三位</div>
+            <div class="weight">4</div>
+        </div>
+
+        <!-- 第二位 -->
+        <div class="rod">
+            <div class="pole" id="pole1"></div>
+            <div class="controls">
+                <button class="plus" onclick="addOne(1)">+</button>
+                <button class="minus" onclick="subOne(1)">−</button>
+            </div>
+            <div class="label">第二位</div>
+            <div class="weight">2</div>
+        </div>
+
+        <!-- 第一位（最右） -->
+        <div class="rod">
+            <div class="pole" id="pole0"></div>
+            <div class="controls">
+                <button class="plus" onclick="addOne(0)">+</button>
+                <button class="minus" onclick="subOne(0)">−</button>
+            </div>
+            <div class="label">第一位</div>
+            <div class="weight">1</div>
+        </div>
     </div>
 
-    <!-- 第三位 -->
-    <div class="rod" data-index="2">
-        <div class="pole" id="pole2"></div>
-        <div class="controls">
-            <button class="plus" onclick="addOne(2)">+</button>
-            <button class="minus" onclick="subOne(2)">−</button>
-        </div>
-        <div class="label">第三位</div>
+    <div class="binary-display" id="binaryDisplay">00000</div>
+
+    <div class="reset">
+        <button class="reset-btn" onclick="resetAll()">一键重置</button>
     </div>
-
-    <!-- 第二位 -->
-    <div class="rod" data-index="1">
-        <div class="pole" id="pole1"></div>
-        <div class="controls">
-            <button class="plus" onclick="addOne(1)">+</button>
-            <button class="minus" onclick="subOne(1)">−</button>
-        </div>
-        <div class="label">第二位</div>
-    </div>
-
-    <!-- 第一位（最右） -->
-    <div class="rod" data-index="0">
-        <div class="pole" id="pole0"></div>
-        <div class="controls">
-            <button class="plus" onclick="addOne(0)">+</button>
-            <button class="minus" onclick="subOne(0)">−</button>
-        </div>
-        <div class="label">第一位</div>
-    </div>
-</div>
-
-<div class="binary-display" id="binaryDisplay">00000</div>
-
-<div class="reset">
-    <button class="reset-btn" onclick="resetAll()">一键重置</button>
 </div>
 
 <script>
@@ -184,14 +205,13 @@
         beads[index].push(1);
         updatePole(index);
 
-        // ✅ 满二进一
         if (beads[index].length === 2) {
             setTimeout(() => {
                 beads[index] = [];
                 updatePole(index);
 
                 if (index < 4) {
-                    addOne(index + 1); // 向左进位
+                    addOne(index + 1);
                 }
             }, 300);
         }

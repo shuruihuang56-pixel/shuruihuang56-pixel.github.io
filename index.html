@@ -2,103 +2,113 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>二进制 ↔ 十进制互转</title>
+<title>二进制拨珠计数器（居中版）</title>
 <style>
     body {
         font-family: "Microsoft YaHei", sans-serif;
-        background: #f5f7fa;
-        text-align: center;
-        padding-top: 40px;
-    }
-
-    h2 {
-        margin-bottom: 30px;
-    }
-
-    .container {
+        background: #f4f7fa;
+        height: 100vh;
+        margin: 0;
         display: flex;
         justify-content: center;
-        gap: 80px;
-        align-items: flex-start;
+        align-items: center;
     }
 
-    .panel {
-        background: white;
-        padding: 30px 40px;
-        border-radius: 12px;
-        box-shadow: 0 6px 16px rgba(0,0,0,.1);
-        width: 260px;
+    .wrapper {
+        text-align: center;
     }
 
-    .panel h3 {
+    h1 {
         margin-bottom: 20px;
     }
 
-    /* 二进制位 */
-    .bits {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-    }
-
-    .bit {
-        width: 50px;
-        height: 70px;
-        background: #e8e8e8;
-        border-radius: 8px;
-        font-size: 32px;
-        font-weight: bold;
-        line-height: 70px;
-        cursor: pointer;
-        user-select: none;
-        transition: all 0.2s ease;
-    }
-
-    .bit.active {
-        background: #4a90e2;
-        color: white;
-    }
-
-    .labels {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 10px;
-        font-size: 12px;
+    .rule {
+        margin-bottom: 25px;
         color: #666;
+        font-size: 16px;
     }
 
-    /* 十进制输入 */
-    .decimal-input {
-        width: 160px;
-        padding: 12px;
-        font-size: 24px;
-        text-align: center;
+    .abacus {
+        display: flex;
+        justify-content: center; /* ✅ 整体居中 */
+        gap: 35px;
+        margin-bottom: 30px;
+    }
+
+    .rod {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pole {
+        width: 14px;
+        height: 220px;
+        background: linear-gradient(#888, #555);
         border-radius: 8px;
-        border: 2px solid #ccc;
+        position: relative;
     }
 
-    .decimal-input:focus {
-        outline: none;
-        border-color: #4a90e2;
-    }
-
-    .hint {
-        margin-top: 15px;
-        font-size: 14px;
-        color: #888;
+    .bead {
+        width: 50px;
+        height: 50px;
+        background: #67c23a;
+        border-radius: 50%;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        box-shadow: 0 6px 12px rgba(0,0,0,.3);
+        transition: top 0.4s ease;
     }
 
     .controls {
-        margin-top: 40px;
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
     }
 
-    button {
-        padding: 10px 24px;
+    .controls button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .plus { background: #67c23a; color: white; }
+    .minus { background: #f56c6c; color: white; }
+
+    .label {
+        margin-top: 6px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .weight {
+        margin-top: 4px;
         font-size: 16px;
+        font-weight: bold;
+        color: #409eff;
+    }
+
+    .binary-display {
+        font-size: 40px;
+        font-weight: bold;
+        letter-spacing: 10px;
+        margin-top: 20px;
+    }
+
+    .reset {
+        margin-top: 30px;
+    }
+
+    .reset-btn {
+        padding: 12px 30px;
+        font-size: 18px;
         border: none;
         border-radius: 8px;
-        background: #f44336;
+        background: #409eff;
         color: white;
         cursor: pointer;
     }
@@ -106,108 +116,132 @@
 </head>
 <body>
 
-<h2>🔁 二进制 ↔ 十进制互转练习</h2>
+<div class="wrapper">
+    <h1>二进制拨珠计数器</h1>
+    <div class="rule">
+        规则：每杆最多 2 颗珠，满二立即消失并向左侧进 1
+    </div>
 
-<div class="container">
-    <!-- 二进制面板 -->
-    <div class="panel">
-        <h3>二进制（点击切换）</h3>
-        <div class="bits">
-            <div class="bit" data-index="4">0</div>
-            <div class="bit" data-index="3">0</div>
-            <div class="bit" data-index="2">0</div>
-            <div class="bit" data-index="1">0</div>
-            <div class="bit" data-index="0">0</div>
+    <div class="abacus">
+        <!-- 第五位 -->
+        <div class="rod">
+            <div class="pole" id="pole4"></div>
+            <div class="controls">
+                <button class="plus" onclick="addOne(4)">+</button>
+                <button class="minus" onclick="subOne(4)">−</button>
+            </div>
+            <div class="label">第五位</div>
+            <div class="weight">16</div>
         </div>
-        <div class="labels">
-            <span>第5位</span>
-            <span>第4位</span>
-            <span>第3位</span>
-            <span>第2位</span>
-            <span>第1位</span>
+
+        <!-- 第四位 -->
+        <div class="rod">
+            <div class="pole" id="pole3"></div>
+            <div class="controls">
+                <button class="plus" onclick="addOne(3)">+</button>
+                <button class="minus" onclick="subOne(3)">−</button>
+            </div>
+            <div class="label">第四位</div>
+            <div class="weight">8</div>
+        </div>
+
+        <!-- 第三位 -->
+        <div class="rod">
+            <div class="pole" id="pole2"></div>
+            <div class="controls">
+                <button class="plus" onclick="addOne(2)">+</button>
+                <button class="minus" onclick="subOne(2)">−</button>
+            </div>
+            <div class="label">第三位</div>
+            <div class="weight">4</div>
+        </div>
+
+        <!-- 第二位 -->
+        <div class="rod">
+            <div class="pole" id="pole1"></div>
+            <div class="controls">
+                <button class="plus" onclick="addOne(1)">+</button>
+                <button class="minus" onclick="subOne(1)">−</button>
+            </div>
+            <div class="label">第二位</div>
+            <div class="weight">2</div>
+        </div>
+
+        <!-- 第一位（最右） -->
+        <div class="rod">
+            <div class="pole" id="pole0"></div>
+            <div class="controls">
+                <button class="plus" onclick="addOne(0)">+</button>
+                <button class="minus" onclick="subOne(0)">−</button>
+            </div>
+            <div class="label">第一位</div>
+            <div class="weight">1</div>
         </div>
     </div>
 
-    <!-- 十进制面板 -->
-    <div class="panel">
-        <h3>十进制</h3>
-        <input
-            type="number"
-            class="decimal-input"
-            id="decimalInput"
-            placeholder="0"
-            min="0"
-            max="31"
-        >
-        <div class="hint">请输入 0 ~ 31 之间的整数</div>
-    </div>
-</div>
+    <div class="binary-display" id="binaryDisplay">00000</div>
 
-<div class="controls">
-    <button onclick="resetAll()">重置</button>
+    <div class="reset">
+        <button class="reset-btn" onclick="resetAll()">一键重置</button>
+    </div>
 </div>
 
 <script>
-    const bits = document.querySelectorAll(".bit");
-    const decimalInput = document.getElementById("decimalInput");
+    let beads = [[], [], [], [], []]; // beads[0] = 第一位（最右）
 
-    let binary = [0, 0, 0, 0, 0]; // b1~b5
+    function updatePole(index) {
+        const pole = document.getElementById(`pole${index}`);
+        pole.innerHTML = "";
 
-    // 二进制 → 十进制
-    function calcDecimal() {
-        const dec = binary.reduce(
-            (sum, v, i) => sum + v * Math.pow(2, i),
-            0
-        );
-        decimalInput.value = dec;
-    }
-
-    // 十进制 → 二进制
-    function calcBinary(dec) {
-        if (dec < 0 || dec > 31) return;
-
-        for (let i = 0; i < 5; i++) {
-            binary[i] = (dec >> i) & 1;
-        }
-
-        updateBits();
-        calcDecimal();
-    }
-
-    // 更新二进制显示
-    function updateBits() {
-        bits.forEach(bit => {
-            const i = Number(bit.dataset.index);
-            bit.innerText = binary[i];
-            bit.classList.toggle("active", binary[i] === 1);
+        beads[index].forEach((_, i) => {
+            const bead = document.createElement("div");
+            bead.className = "bead";
+            bead.style.top = `${140 - i * 55}px`;
+            pole.appendChild(bead);
         });
     }
 
-    // 点击二进制位
-    bits.forEach(bit => {
-        bit.addEventListener("click", () => {
-            const i = Number(bit.dataset.index);
-            binary[i] = binary[i] === 0 ? 1 : 0;
-            updateBits();
-            calcDecimal();
-        });
-    });
+    function addOne(index) {
+        beads[index].push(1);
+        updatePole(index);
 
-    // 输入十进制
-    decimalInput.addEventListener("input", () => {
-        const val = Number(decimalInput.value);
-        if (!isNaN(val)) {
-            calcBinary(val);
+        if (beads[index].length === 2) {
+            setTimeout(() => {
+                beads[index] = [];
+                updatePole(index);
+
+                if (index < 4) {
+                    addOne(index + 1);
+                }
+            }, 300);
         }
-    });
+
+        updateBinary();
+    }
+
+    function subOne(index) {
+        if (beads[index].length > 0) {
+            beads[index].pop();
+        }
+        updatePole(index);
+        updateBinary();
+    }
+
+    function updateBinary() {
+        const bits = beads.map(b => b.length % 2);
+        document.getElementById("binaryDisplay").innerText =
+            bits.slice().reverse().join("");
+    }
 
     function resetAll() {
-        binary = [0, 0, 0, 0, 0];
-        updateBits();
-        decimalInput.value = 0;
+        beads = [[], [], [], [], []];
+        for (let i = 0; i < 5; i++) {
+            updatePole(i);
+        }
+        updateBinary();
     }
 
-    updateBits();
+    resetAll();
 </script>
 
 </body>

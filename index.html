@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>二进制 ↔ 十进制互转</title>
+<style>
+    body {
+        font-family: "Microsoft YaHei", sans-serif;
+        background: #f5f7fa;
+        text-align: center;
+        padding-top: 40px;
+    }
+
+    h2 {
+        margin-bottom: 30px;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        gap: 80px;
+        align-items: flex-start;
+    }
+
+    .panel {
+        background: white;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(0,0,0,.1);
+        width: 260px;
+    }
+
+    .panel h3 {
+        margin-bottom: 20px;
+    }
+
+    /* 二进制位 */
+    .bits {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .bit {
+        width: 50px;
+        height: 70px;
+        background: #e8e8e8;
+        border-radius: 8px;
+        font-size: 32px;
+        font-weight: bold;
+        line-height: 70px;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.2s ease;
+    }
+
+    .bit.active {
+        background: #4a90e2;
+        color: white;
+    }
+
+    .labels {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 10px;
+        font-size: 12px;
+        color: #666;
+    }
+
+    /* 十进制输入 */
+    .decimal-input {
+        width: 160px;
+        padding: 12px;
+        font-size: 24px;
+        text-align: center;
+        border-radius: 8px;
+        border: 2px solid #ccc;
+    }
+
+    .decimal-input:focus {
+        outline: none;
+        border-color: #4a90e2;
+    }
+
+    .hint {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #888;
+    }
+
+    .controls {
+        margin-top: 40px;
+    }
+
+    button {
+        padding: 10px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        background: #f44336;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<h2>🔁 二进制 ↔ 十进制互转练习</h2>
+
+<div class="container">
+    <!-- 二进制面板 -->
+    <div class="panel">
+        <h3>二进制（点击切换）</h3>
+        <div class="bits">
+            <div class="bit" data-index="4">0</div>
+            <div class="bit" data-index="3">0</div>
+            <div class="bit" data-index="2">0</div>
+            <div class="bit" data-index="1">0</div>
+            <div class="bit" data-index="0">0</div>
+        </div>
+        <div class="labels">
+            <span>第5位</span>
+            <span>第4位</span>
+            <span>第3位</span>
+            <span>第2位</span>
+            <span>第1位</span>
+        </div>
+    </div>
+
+    <!-- 十进制面板 -->
+    <div class="panel">
+        <h3>十进制</h3>
+        <input
+            type="number"
+            class="decimal-input"
+            id="decimalInput"
+            placeholder="0"
+            min="0"
+            max="31"
+        >
+        <div class="hint">请输入 0 ~ 31 之间的整数</div>
+    </div>
+</div>
+
+<div class="controls">
+    <button onclick="resetAll()">重置</button>
+</div>
+
+<script>
+    const bits = document.querySelectorAll(".bit");
+    const decimalInput = document.getElementById("decimalInput");
+
+    let binary = [0, 0, 0, 0, 0]; // b1~b5
+
+    // 二进制 → 十进制
+    function calcDecimal() {
+        const dec = binary.reduce(
+            (sum, v, i) => sum + v * Math.pow(2, i),
+            0
+        );
+        decimalInput.value = dec;
+    }
+
+    // 十进制 → 二进制
+    function calcBinary(dec) {
+        if (dec < 0 || dec > 31) return;
+
+        for (let i = 0; i < 5; i++) {
+            binary[i] = (dec >> i) & 1;
+        }
+
+        updateBits();
+        calcDecimal();
+    }
+
+    // 更新二进制显示
+    function updateBits() {
+        bits.forEach(bit => {
+            const i = Number(bit.dataset.index);
+            bit.innerText = binary[i];
+            bit.classList.toggle("active", binary[i] === 1);
+        });
+    }
+
+    // 点击二进制位
+    bits.forEach(bit => {
+        bit.addEventListener("click", () => {
+            const i = Number(bit.dataset.index);
+            binary[i] = binary[i] === 0 ? 1 : 0;
+            updateBits();
+            calcDecimal();
+        });
+    });
+
+    // 输入十进制
+    decimalInput.addEventListener("input", () => {
+        const val = Number(decimalInput.value);
+        if (!isNaN(val)) {
+            calcBinary(val);
+        }
+    });
+
+    function resetAll() {
+        binary = [0, 0, 0, 0, 0];
+        updateBits();
+        decimalInput.value = 0;
+    }
+
+    updateBits();
+</script>
+
+</body>
+</html>

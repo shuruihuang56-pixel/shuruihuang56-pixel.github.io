@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>二进制拨珠计数器（居中版）</title>
+<title>二进制拨珠计数器（椭圆珠）</title>
 <style>
     body {
         font-family: "Microsoft YaHei", sans-serif;
@@ -30,7 +30,7 @@
 
     .abacus {
         display: flex;
-        justify-content: center; /* ✅ 整体居中 */
+        justify-content: center;
         gap: 35px;
         margin-bottom: 30px;
     }
@@ -49,15 +49,16 @@
         position: relative;
     }
 
+    /* ✅ 椭圆珠 */
     .bead {
-        width: 50px;
-        height: 50px;
-        background: #67c23a;
-        border-radius: 50%;
+        width: 70px;
+        height: 36px;
+        background: linear-gradient(#7fdc6f, #4f9f3f);
+        border-radius: 50% / 50%;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        box-shadow: 0 6px 12px rgba(0,0,0,.3);
+        box-shadow: 0 6px 12px rgba(0,0,0,.35);
         transition: top 0.4s ease;
     }
 
